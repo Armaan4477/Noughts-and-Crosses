@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
 import com.airbnb.lottie.LottieAnimationView;
@@ -41,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean isEasyMode = false;
     private boolean isHardDifficulty = false;
 
-
+    private VideoView videoView;
 
 
     public void openKCWebsite(View view) {
@@ -270,18 +273,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkOverallWin();
 
         if (!isPlayerWinsGameAnimationPlaying && !isGameWinAnimationPlaying) {
-            LottieAnimationView thumbsUpAnimation = findViewById(R.id.lottie_thumbs_up);
-            thumbsUpAnimation.bringToFront();
-            thumbsUpAnimation.setVisibility(View.VISIBLE);
-            thumbsUpAnimation.setAnimation(R.raw.lottie_thumbs_up);
-            thumbsUpAnimation.playAnimation();
-            thumbsUpAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    thumbsUpAnimation.setVisibility(View.GONE);
-                }
-            });
-
+            playEventVideo(R.raw.loading); // Replace R.raw.player1_wins with the actual video resource
             if (player1Points == 4) {
                 playerWinsGame(1);
             } else {
@@ -298,35 +290,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (!isPlayerWinsGameAnimationPlaying && !isGameWinAnimationPlaying) {
             if (!isTwoPlayersMode) {
-                LottieAnimationView sadfaceAnimation = findViewById(R.id.lottie_sad_face);
-                sadfaceAnimation.bringToFront();
-                sadfaceAnimation.setVisibility(View.VISIBLE);
-                sadfaceAnimation.setAnimation(R.raw.lottie_sad_face);
-                sadfaceAnimation.playAnimation();
-                sadfaceAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        sadfaceAnimation.setVisibility(View.GONE);
-                    }
-                });
+                playEventVideo(R.raw.loading); // Replace R.raw.bot_wins with the actual video resource
                 if (player2Points == 4) {
                     playerWinsGame(2);
                 } else {
                     Toast.makeText(this, "Bot wins the round!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                LottieAnimationView thumbsUpAnimation = findViewById(R.id.lottie_thumbs_up);
-                thumbsUpAnimation.bringToFront();
-                thumbsUpAnimation.setVisibility(View.VISIBLE);
-                thumbsUpAnimation.setAnimation(R.raw.lottie_thumbs_up);
-                thumbsUpAnimation.playAnimation();
-                thumbsUpAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        thumbsUpAnimation.setVisibility(View.GONE);
-                    }
-                });
-
+                playEventVideo(R.raw.loading); // Replace R.raw.player2_wins with the actual video resource
                 if (player2Points == 4) {
                     playerWinsGame(2);
                 } else {
@@ -570,4 +541,51 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
+    // Add this method to play a video based on the event
+    private void playEventVideo(int videoResId) {
+        // Check if videoView is null
+        if (videoView == null) {
+            // Initialize videoView if null
+            videoView = findViewById(R.id.videoView);
+            if (videoView == null) {
+                // Log an error or handle the situation where videoView cannot be found
+                return;
+            }
+        }
+
+        // Hide TextViews
+        textViewPlayer1.setVisibility(View.INVISIBLE);
+        textViewPlayer2.setVisibility(View.INVISIBLE);
+
+        // Show VideoView
+        videoView.setVisibility(View.VISIBLE);
+
+        // Set video file
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + videoResId);
+        videoView.setVideoURI(videoUri);
+
+        // Set completion listener to handle events after video completion
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                // Hide VideoView
+                videoView.setVisibility(View.GONE);
+
+                // Show buttons
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        buttons[i][j].setVisibility(View.VISIBLE);
+                    }
+                }
+
+                // Show TextViews
+                textViewPlayer1.setVisibility(View.VISIBLE);
+                textViewPlayer2.setVisibility(View.VISIBLE);
+            }
+        });
+
+        // Start playing the video
+        videoView.start();
     }
+}
