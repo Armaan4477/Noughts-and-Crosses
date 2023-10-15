@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        videoView = findViewById(R.id.videoView);
+
         textViewPlayer1 = findViewById(R.id.text_view_p1);
         textViewPlayer2 = findViewById(R.id.text_view_p2);
         textViewPlayer1.setBackgroundColor(Color.parseColor("#FF0000"));
@@ -273,14 +275,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         checkOverallWin();
 
         if (!isPlayerWinsGameAnimationPlaying && !isGameWinAnimationPlaying) {
-            playEventVideo(R.raw.loading); // Replace R.raw.player1_wins with the actual video resource
+            int videoResourceId;
+
+            if (isTwoPlayersMode) {
+                // Two-player mode
+                videoResourceId = R.raw.roundwin2player1; // Replace with the actual video resource
+                Toast.makeText(this, "Player 1 wins the round!", Toast.LENGTH_SHORT).show();
+            } else {
+                // One-player mode
+                videoResourceId = R.raw.roundwin1playerhuman; // Replace with the actual video resource
+                Toast.makeText(this, "You win the round!", Toast.LENGTH_SHORT).show();
+            }
+
+            playEventVideo(videoResourceId);
+
             if (player1Points == 4) {
                 playerWinsGame(1);
-            } else {
-                Toast.makeText(this, "Player 1 wins the round!", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
 
     private void player2Wins() {
         player2Points++;
@@ -290,14 +304,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (!isPlayerWinsGameAnimationPlaying && !isGameWinAnimationPlaying) {
             if (!isTwoPlayersMode) {
-                playEventVideo(R.raw.loading); // Replace R.raw.bot_wins with the actual video resource
+                playEventVideo(R.raw.roundwin1playerbot); // Replace R.raw.bot_wins with the actual video resource
                 if (player2Points == 4) {
                     playerWinsGame(2);
                 } else {
                     Toast.makeText(this, "Bot wins the round!", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                playEventVideo(R.raw.loading); // Replace R.raw.player2_wins with the actual video resource
+                playEventVideo(R.raw.roundwin2player2); // Replace R.raw.player2_wins with the actual video resource
                 if (player2Points == 4) {
                     playerWinsGame(2);
                 } else {
@@ -377,10 +391,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void playerWinsGame(int player) {
         String winnerMessage;
+        int videoResourceId;
+
         if (!isTwoPlayersMode && player == 2) {
             winnerMessage = "Bot wins the game!";
+            videoResourceId = R.raw.gamewin1playerbot; // Replace with the actual video resource
         } else {
             winnerMessage = "Player " + player + " wins the game!";
+
+            if (isTwoPlayersMode) {
+                // Two-player mode
+                videoResourceId = (player == 1) ? R.raw.gamewin2player1 : R.raw.gamewin2player2;
+            } else {
+                // One-player mode
+                videoResourceId = R.raw.gamewin1playerhuman;
+            }
         }
 
         Toast.makeText(this, winnerMessage, Toast.LENGTH_SHORT).show();
@@ -393,19 +418,68 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         updatePointsText();
         resetBoardWithDelay();
 
-        LottieAnimationView partyEmojiAnimation = findViewById(R.id.lottie_party_emoji);
-        partyEmojiAnimation.bringToFront();
-        partyEmojiAnimation.setVisibility(View.VISIBLE);
-        partyEmojiAnimation.setAnimation(R.raw.lottie_party_pop);
-        partyEmojiAnimation.playAnimation();
-        partyEmojiAnimation.addAnimatorListener(new AnimatorListenerAdapter() {
+        // Play the corresponding event video
+        if (videoResourceId != 0) {
+            playEventVideo(videoResourceId);
+        }
+    }
+
+
+
+    private void playEventVideo(int videoResId) {
+        // Check if videoView is null
+        if (videoView == null) {
+            // Initialize videoView if null
+            videoView = findViewById(R.id.videoView);
+            if (videoView == null) {
+                // Log an error or handle the situation where videoView cannot be found
+                return;
+            }
+        }
+
+        // Hide buttons
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                buttons[i][j].setVisibility(View.INVISIBLE);
+            }
+        }
+
+        // Hide TextViews
+        textViewPlayer1.setVisibility(View.INVISIBLE);
+        textViewPlayer2.setVisibility(View.INVISIBLE);
+
+        // Show VideoView
+        videoView.setVisibility(View.VISIBLE);
+
+        // Set video file
+        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + videoResId);
+        videoView.setVideoURI(videoUri);
+
+        // Set completion listener to handle events after video completion
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
-            public void onAnimationEnd(Animator animation) {
-                partyEmojiAnimation.setVisibility(View.GONE);
-                isGameWinAnimationPlaying = false;
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                // Hide VideoView
+                videoView.setVisibility(View.GONE);
+
+                // Show buttons
+                for (int i = 0; i < 3; i++) {
+                    for (int j = 0; j < 3; j++) {
+                        buttons[i][j].setVisibility(View.VISIBLE);
+                    }
+                }
+
+                // Show TextViews
+                textViewPlayer1.setVisibility(View.VISIBLE);
+                textViewPlayer2.setVisibility(View.VISIBLE);
             }
         });
+
+        // Start playing the video
+        videoView.start();
     }
+
+
 
     @Override
         protected void onSaveInstanceState(Bundle outState) {
@@ -540,52 +614,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 player1Turn = !player1Turn;
             }
         }
-    }
-
-    // Add this method to play a video based on the event
-    private void playEventVideo(int videoResId) {
-        // Check if videoView is null
-        if (videoView == null) {
-            // Initialize videoView if null
-            videoView = findViewById(R.id.videoView);
-            if (videoView == null) {
-                // Log an error or handle the situation where videoView cannot be found
-                return;
-            }
-        }
-
-        // Hide TextViews
-        textViewPlayer1.setVisibility(View.INVISIBLE);
-        textViewPlayer2.setVisibility(View.INVISIBLE);
-
-        // Show VideoView
-        videoView.setVisibility(View.VISIBLE);
-
-        // Set video file
-        Uri videoUri = Uri.parse("android.resource://" + getPackageName() + "/" + videoResId);
-        videoView.setVideoURI(videoUri);
-
-        // Set completion listener to handle events after video completion
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                // Hide VideoView
-                videoView.setVisibility(View.GONE);
-
-                // Show buttons
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        buttons[i][j].setVisibility(View.VISIBLE);
-                    }
-                }
-
-                // Show TextViews
-                textViewPlayer1.setVisibility(View.VISIBLE);
-                textViewPlayer2.setVisibility(View.VISIBLE);
-            }
-        });
-
-        // Start playing the video
-        videoView.start();
     }
 }
