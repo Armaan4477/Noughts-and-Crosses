@@ -1,7 +1,5 @@
 package com.mpan.cg01;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
@@ -20,8 +18,6 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.Random;
-import com.airbnb.lottie.LottieAnimationView;
-
 
 /** @noinspection ALL*/
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
@@ -324,8 +320,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void draw() {
         Toast.makeText(this, "Draw!", Toast.LENGTH_SHORT).show();
+
+        // Add video playback for draw
+        playEventVideo(R.raw.draw);
+
         resetBoardWithDelay();
     }
+
 
 
 

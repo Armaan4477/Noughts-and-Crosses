@@ -12,33 +12,7 @@
         android:visibility="gone"/>
 
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_thumbs_up"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"/>
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_party_emoji"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"/>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_sad_face"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"/>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie_sad_face2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_autoPlay="true"/>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
