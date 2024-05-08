@@ -9,7 +9,7 @@
         android:label="Noughts and Crosses"
         android:supportsRtl="true"
         android:theme="@style/Theme.TTT3"
-        tools:targetApi="33">
+        tools:targetApi="34">
 
         <activity
             android:name=".LoadingActivity"
