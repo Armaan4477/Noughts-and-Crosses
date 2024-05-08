@@ -37,7 +37,7 @@ To start playing Noughts and Crosses:
 ## Installation
 
 To install the Noughts and Crosses game application:
-1. Go to the [Releases](https://github.com/Armaan4477/Noughts-and-Crosses/releases) section of this repository.(release to be added soon)
+1. Go to the [Releases](https://github.com/Armaan4477/Noughts-and-Crosses/releases) section of this repository.
 2. Download the APK file.
 3. Give all required permissions on your device.
 4. Run the APK and enjoy playing!
