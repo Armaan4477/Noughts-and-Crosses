@@ -167,11 +167,6 @@ Version 2.0 includes:
 
 Download the latest APK from the [Releases](https://github.com/Armaan4477/Noughts-and-Crosses/releases) page.
 
-## Credits
-
-- Developed by: Armaan N
-- Lottie Animations by Airbnb
-
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
