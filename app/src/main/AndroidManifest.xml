@@ -8,8 +8,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="Noughts and Crosses"
         android:supportsRtl="true"
-        android:theme="@style/Theme.TTT3"
-        tools:targetApi="34">
+        android:theme="@style/Theme.TicTacToe"
+        tools:targetApi="35">
 
         <activity
             android:name=".LoadingActivity"

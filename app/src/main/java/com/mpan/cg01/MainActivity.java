@@ -43,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private VideoView videoView;
 
 
-    public void openKCWebsite(View view) {
-        Uri uri = Uri.parse("https://kccemsr.edu.in/");
+    public void openWebsite(View view) {
+        Uri uri = Uri.parse("https://armaan44.is-a.dev/");
         Intent intent = new Intent(Intent.ACTION_VIEW, uri);
         startActivity(intent);
     }
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         logoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                openKCWebsite(v);
+                openWebsite(v);
             }
         });
 
@@ -173,15 +173,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (player1Turn) {
             ((Button) v).setText("X");
-            v.setBackgroundColor(Color.RED);
+            ((Button) v).setBackgroundColor(Color.RED);
             textViewPlayer1.setBackgroundColor(Color.parseColor("#FF0000"));
             textViewPlayer2.setBackgroundColor(Color.parseColor("#0000FF"));
         } else if (isTwoPlayersMode) {
             ((Button) v).setText("O");
-            v.setBackgroundColor(Color.BLUE);
+            ((Button) v).setBackgroundColor(Color.BLUE);
             textViewPlayer1.setBackgroundColor(Color.parseColor("#FF0000"));
             textViewPlayer2.setBackgroundColor(Color.parseColor("#0000FF"));
         } else {
+            ((Button) v).setText("X");
+            ((Button) v).setBackgroundColor(Color.RED);
             v.setEnabled(false);
             new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                 @Override
